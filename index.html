@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <section class="calc">
+        <div class="container">
+            <div class="calc__wrapper">
+                <h2 class="calc__title"><span>Калькулятор стоимости</span></h2>
+
+                <div class="calc__content">
+
+<form action="#" class="form">
+
+    <div class="calc-form">
+
+        <div class="calc-item calcItemProperty">
+            <div class="calc-item__title">Форма собственности:</div>
+            <select name="calcItemProperty" class="calc-item__select calc-handler">
+                <option value="10000">ИП</option>
+                <option value="20000">ООО</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemTaxation">
+            <div class="calc-item__title">Система налогообложения:</div>
+            <select name="calcItemTaxation" class="calc-item__select calc-handler">
+                <option value="1000">ОСНО</option>
+                <option value="2000">УСН Доходы</option>
+                <option value="3000">УСН Доходы - расходы</option>
+                <option value="4000">ЕНВД</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemENVD" style="display: none;">
+            <div class="calc-item__title">Количество точек по ЕНВД:</div>
+            <select name="calcItemENVD" class="calc-item__select calc-handler">
+                <option value="envd0">0</option>
+                <option value="envd1">1</option>
+                <option value="envd2">2</option>
+                <option value="envd3">3</option>
+                <option value="envd4">4</option>
+                <option value="envd5">5</option>
+                <option value="envd6">6</option>
+                <option value="envd7">7</option>
+                <option value="envd8">8</option>
+                <option value="envd9">9</option>
+                <option value="envd10">10</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemENVDtax" style="display: none;">
+            <div class="calc-item__title">Основная система налогообложения:</div>
+            <select name="calcItemENVDtax" class="calc-item__select calc-handler">
+                <option value="ENVDosno">ОСНО</option>
+                <option value="ENVDysn_dohod">УСН Доходы</option>
+                <option value="ENVDysn_dohod_rashod">УСН Доходы - расходы</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemStaff">
+            <div class="calc-item__title">Количество сотрудников:</div>
+            <select name="calcItemStaff" class="calc-item__select calc-handler">
+                <option value="staff0">Нет сотрудников</option>
+                <option value="staff1">1</option>
+                <option value="staff2">2</option>
+                <option value="staff3">3</option>
+                <option value="staff4">4</option>
+                <option value="staff5">5</option>
+                <option value="staff10">10</option>
+                <option value="staff15">15</option>
+                <option value="staff20">20</option>
+                <option value="staff30">30</option>
+                <option value="staff40">40</option>
+                <option value="staff50">50</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemOborot">
+            <div class="calc-item__title">Нулевая или с оборотами:</div>
+            <select name="calcItemOborot" class="calc-item__select calc-handler">
+                <option value="oborot0">Нулевая</option>
+                <option value="oborot1">С оборотами</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemDocument" style="display: none;">
+            <div class="calc-item__title">Количество первичных документов:</div>
+            <select name="calcItemDocument" class="calc-item__select calc-handler">
+                <option value="document0">Нет</option>
+                <option value="document10">10</option>
+                <option value="document20">20</option>
+                <option value="document30">30</option>
+                <option value="document40">40</option>
+                <option value="document50">50</option>
+                <option value="document60">60</option>
+                <option value="document70">70</option>
+                <option value="document80">80</option>
+                <option value="document90">90</option>
+                <option value="document100">100</option>
+                <option value="document150">150</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemErrands" style="display: none;">
+            <div class="calc-item__title">Количество платежных поручений:</div>
+            <select name="calcItemErrands" class="calc-item__select calc-handler">
+                <option value="errands0">Нет</option>
+                <option value="1x10">1 - 10</option>
+                <option value="11x25">11 - 25</option>
+                <option value="26x50">26 - 50</option>
+                <option value="51x100">51 - 100</option>
+            </select>
+        </div>
+
+        <div class="calc-item calcItemErrandsWay" style="display: none;">
+            <div class="calc-item__title">Способ оформления платежных поручений:</div>
+            <select name="calcItemErrandsWay" class="calc-item__select calc-handler">
+                <option value="errandsWay0">Банк-клиент</option>
+                <option value="errandsWay1">Только разность в 1С</option>
+                <option value="errandsWay2">Банк-клиент и разность в 1С</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="calc-price">
+        <h3 class="calc-price__title">Стоимость обслуживания:</h3>
+
+        <div class="calc-price__sum">≈ 10000 руб./мес.</div>
+
+        <!-- <input type="text" name="name" class="calc-price__input" placeholder="Ваше имя" required>
+        <input type="tel" name="phone" class="calc-price__input" placeholder="Ваш телефон" required>
+        <button class="calc__btn">Оставить Заявку</button> -->
+
+    </div>
+    <!-- /.calc-price -->
+    
+</form>
+<!-- /.calc-form -->
+
+                </div>
+                <!-- /.calc__content -->
+            </div>
+            <!-- /.calc__wrapper -->
+        </div>
+        <!-- /.calc__wrapper -->
+    </section>
+    <!-- /.calc -->
+    
+    <script src="js/app.js"></script>
+    
+</body>
+</html>
