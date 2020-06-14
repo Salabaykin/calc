@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         result += +elem.value;
 
-        totalPriceSum.textContent = `≈ ${result} руб./мес.`;
+        // totalPriceSum.textContent = `≈ ${result} руб./мес.`;
 
     }
 

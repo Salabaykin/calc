@@ -26,6 +26,8 @@ class Control {
   hide() {
     this.el.closest('.calc-item').style.display = 'none';
   }
+
+  recalculate() {}
 }
 
 
@@ -43,7 +45,7 @@ class PropertyControl extends Control {
   }
 
   onChange(e) {
-    this.emit('taxation-control:hide'); // просто для примера легко и удобно скрываем taxation
+    this.recalculate();
   }
 }
 
@@ -51,6 +53,10 @@ class PropertyControl extends Control {
 class TaxationControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
+  }
+
+  onChange(e) {
+    this.recalculate();
   }
 }
 
@@ -69,6 +75,9 @@ class TaxationControl extends Control {
 class App {
   components;
   events = {};
+  instances = [];
+
+  sumNode;
 
   constructor(components) {
     this.components = components;
@@ -77,11 +86,24 @@ class App {
   }
 
   init() {
+    this.sumNode = document.querySelector('.calc-price__sum');
+
     const elems = document.querySelectorAll(`[data-module-control]`);
     Array.from(elems).forEach((el) => {
       const component = this.components[el.getAttribute('data-module-control')];
       const cmpInstance = new component(el, this.on, this.emit);
+      cmpInstance.recalculate = () => this.calculate();
+      this.instances.push(cmpInstance);
     })
+  }
+
+  calculate = () => {
+    const propertyValue = this.instances.find((ins) => ins.name === 'property-control').el.value;
+    const taxationValue = this.instances.find((ins) => ins.name === 'taxation-control').el.value;
+
+    const result = (+propertyValue) + (+taxationValue);
+    console.log(result);
+    this.sumNode.innerText = `≈ ${result} руб./мес.`
   }
 
   on = (key, handler) => {
