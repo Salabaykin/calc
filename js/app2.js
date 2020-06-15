@@ -17,17 +17,17 @@ class Control {
     this.name = el.getAttribute('data-module-control');
     this.el.addEventListener('change', (e) => this.onChange(e));
 
-    this.on(`${this.name}:hide`, () => this.hide())
-    this.on(`${this.name}:show`, () => this.show())
+    this.on(`${this.name}:hide`, () => this.hide());
+    this.on(`${this.name}:show`, () => this.show());
   }
 
   init() {
-    this.isVisible ? this.show() : this.hide();
+    this.isVisible ? this.show() : this.hide()
   }
 
   show() {
     this.isVisible = true;
-    this.el.closest('.calc-item').style.display = 'block'
+    this.el.closest('.calc-item').style.display = 'block';
   }
   
   hide() {
@@ -60,15 +60,16 @@ class TaxationControl extends Control {
 
     this.on('taxation-set-value', (data) => {
       this.el.value = data;
-    })
+    });
   }
 
   onChange(e) {
-    console.log(this.el.value);
     if(this.el.value === '4000') {
-      this.emit('envd-point-control:show')
+      this.emit('envd-point-control:show');
+      this.emit('main-taxation-control:show');
     } else {
-      this.emit('envd-point-control:hide')
+      this.emit('envd-point-control:hide');
+      this.emit('main-taxation-control:hide');
     }
 
     this.recalculate();
@@ -120,9 +121,23 @@ class OborotControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
     this.init();
+
+    this.on('oborot-set-value', (data) => {
+      this.el.value = data;
+    });
   }
 
   onChange(e) {
+    if(this.el.value === '1000') {
+      this.emit('primary-document-control:show');
+      this.emit('errands-control:show');
+    } else {
+      this.emit('primary-document-control:hide');
+      this.emit('errands-control:hide');
+      this.emit('dup-document-control:hide');
+      this.emit('record-keeping-control:hide');
+    }
+
     this.recalculate();
   }
 }
@@ -130,13 +145,24 @@ class OborotControl extends Control {
 
 class DocumentControl extends Control {
   isVisible = false;
-
   constructor(el, on, emit) {
     super(el, on, emit);
     this.init();
+
+    this.on('document-set-value', (data) => {
+      this.el.value = data;
+    });
   }
 
   onChange(e) {
+    if(this.el.value != '100') {
+      this.emit('dup-document-control:show');
+      this.emit('record-keeping-control:show');
+    } else {
+      this.emit('dup-document-control:hide');
+      this.emit('record-keeping-control:hide');
+    }
+
     this.recalculate();
   }
 }
@@ -172,13 +198,22 @@ class RecordKeepingControl extends Control {
 
 class ErrandsControl extends Control {
   isVisible = false;
-
   constructor(el, on, emit) {
     super(el, on, emit);
     this.init();
+
+    this.on('errands-set-value', (data) => {
+      this.el.value = data;
+    });
   }
 
   onChange(e) {
+    if(this.el.value != '100') {
+      this.emit('errands-way-control:show');
+    } else {
+      this.emit('errands-way-control:hide');
+    }
+
     this.recalculate();
   }
 }
@@ -209,7 +244,7 @@ class App {
   constructor(components) {
     this.components = components;
 
-    this.init()
+    this.init();
   }
 
   init() {
@@ -221,7 +256,7 @@ class App {
       const cmpInstance = new component(el, this.on, this.emit);
       cmpInstance.recalculate = () => this.calculate();
       this.instances.push(cmpInstance);
-    })
+    });
   }
 
   calculate = () => {
@@ -243,7 +278,7 @@ class App {
 
   getValueOrZero(componentName) {
     const instance = this.instances.find((ins) => ins.name === componentName);
-    return instance.isVisible ? (+instance.value) : 0;
+    return instance.isVisible ? (+instance.el.value) : 0;
   }
 
   on = (key, handler) => {
