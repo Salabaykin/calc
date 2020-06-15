@@ -29,7 +29,7 @@ class Control {
     this.isVisible = true;
     this.el.closest('.calc-item').style.display = 'block'
   }
-
+  
   hide() {
     this.isVisible = false;
     this.el.closest('.calc-item').style.display = 'none';
@@ -43,6 +43,8 @@ class Control {
 class PropertyControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
+
+    this.init();
   }
 
   onChange(e) {
@@ -54,17 +56,32 @@ class PropertyControl extends Control {
 class TaxationControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
+
+    this.on('taxation-set-value', (data) => {
+      this.el.value = data;
+    })
   }
 
   onChange(e) {
+    console.log(this.el.value);
+    if(this.el.value === '4000') {
+      this.emit('envd-point-control:show')
+    } else {
+      this.emit('envd-point-control:hide')
+    }
+
     this.recalculate();
   }
 }
 
 
 class ENVDControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -74,8 +91,11 @@ class ENVDControl extends Control {
 
 
 class MainTaxationControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -87,6 +107,7 @@ class MainTaxationControl extends Control {
 class StaffControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -98,6 +119,7 @@ class StaffControl extends Control {
 class OborotControl extends Control {
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -107,8 +129,11 @@ class OborotControl extends Control {
 
 
 class DocumentControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -118,8 +143,11 @@ class DocumentControl extends Control {
 
 
 class DupDocumentControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -129,8 +157,11 @@ class DupDocumentControl extends Control {
 
 
 class RecordKeepingControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -140,8 +171,11 @@ class RecordKeepingControl extends Control {
 
 
 class ErrandsControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -151,8 +185,11 @@ class ErrandsControl extends Control {
 
 
 class ErrandsWayControl extends Control {
+  isVisible = false;
+
   constructor(el, on, emit) {
     super(el, on, emit);
+    this.init();
   }
 
   onChange(e) {
@@ -179,7 +216,7 @@ class App {
     this.sumNode = document.querySelector('.calc-price__sum');
 
     const elems = document.querySelectorAll(`[data-module-control]`);
-    Array.from(elems).forEach((el) => {
+    elems.forEach((el) => {
       const component = this.components[el.getAttribute('data-module-control')];
       const cmpInstance = new component(el, this.on, this.emit);
       cmpInstance.recalculate = () => this.calculate();
@@ -206,11 +243,10 @@ class App {
 
   getValueOrZero(componentName) {
     const instance = this.instances.find((ins) => ins.name === componentName);
-    return instance.isVisible ? (+instance.el.value) : 0;
+    return instance.isVisible ? (+instance.value) : 0;
   }
 
   on = (key, handler) => {
-    console.log(key);
     if (this.events[key]) {
       this.events[key].push(handler);
     } else {
@@ -219,7 +255,6 @@ class App {
   }
 
   emit = (key, data) => {
-    console.log(this.events);
     this.events[key] && this.events[key].forEach((handler) => {
       handler(data);
     })
