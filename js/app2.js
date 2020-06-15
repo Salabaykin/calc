@@ -26,10 +26,12 @@ class Control {
   }
 
   show() {
+    this.isVisible = true;
     this.el.closest('.calc-item').style.display = 'block'
   }
 
   hide() {
+    this.isVisible = false;
     this.el.closest('.calc-item').style.display = 'none';
   }
 
