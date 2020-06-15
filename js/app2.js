@@ -2,6 +2,7 @@
 class Control {
   el;
   name;
+  isVisible = true;
 
 
   // event bus methods
@@ -18,6 +19,10 @@ class Control {
 
     this.on(`${this.name}:hide`, () => this.hide())
     this.on(`${this.name}:show`, () => this.show())
+  }
+
+  init() {
+    this.isVisible ? this.show() : this.hide();
   }
 
   show() {
@@ -181,20 +186,25 @@ class App {
   }
 
   calculate = () => {
-    const propertyValue = this.instances.find((ins) => ins.name === 'property-control').el.value;
-    const taxationValue = this.instances.find((ins) => ins.name === 'taxation-control').el.value;
-    const ENVDValue = this.instances.find((ins) => ins.name === 'envd-point-control').el.value;
-    const mainTaxationValue = this.instances.find((ins) => ins.name === 'main-taxation-control').el.value;
-    const staffValue = this.instances.find((ins) => ins.name === 'staff-control').el.value;
-    const oborotValue = this.instances.find((ins) => ins.name === 'oborot-control').el.value;
-    const primaryDocumentValue = this.instances.find((ins) => ins.name === 'primary-document-control').el.value;
-    const dupDocumentValue = this.instances.find((ins) => ins.name === 'dup-document-control').el.value;
-    const recordKeepingValue = this.instances.find((ins) => ins.name === 'record-keeping-control').el.value;
-    const errandsValue = this.instances.find((ins) => ins.name === 'errands-control').el.value;
-    const errandsWayValue = this.instances.find((ins) => ins.name === 'errands-way-control').el.value;
+    const propertyValue = this.getValueOrZero('property-control');
+    const taxationValue = this.getValueOrZero('taxation-control');
+    const ENVDValue = this.getValueOrZero('envd-point-control');
+    const mainTaxationValue = this.getValueOrZero('main-taxation-control');
+    const staffValue = this.getValueOrZero('staff-control');
+    const oborotValue = this.getValueOrZero('oborot-control');
+    const primaryDocumentValue = this.getValueOrZero('primary-document-control');
+    const dupDocumentValue = this.getValueOrZero('dup-document-control');
+    const recordKeepingValue = this.getValueOrZero('record-keeping-control');
+    const errandsValue = this.getValueOrZero('errands-control');
+    const errandsWayValue = this.getValueOrZero('errands-way-control');
 
-    const result = (+propertyValue) + (+taxationValue) + (+ENVDValue) + (+mainTaxationValue) + (+staffValue) + (+oborotValue) + (+primaryDocumentValue) + (+dupDocumentValue) + (+recordKeepingValue) + (+errandsValue) + (+errandsWayValue);
+    const result = propertyValue + taxationValue + ENVDValue + mainTaxationValue + staffValue + oborotValue + primaryDocumentValue + dupDocumentValue + recordKeepingValue + errandsValue + errandsWayValue;
     this.sumNode.innerText = `≈ ${result} руб./мес.`
+  }
+
+  getValueOrZero(componentName) {
+    const instance = this.instances.find((ins) => ins.name === componentName);
+    return instance.isVisible ? (+instance.el.value) : 0;
   }
 
   on = (key, handler) => {
