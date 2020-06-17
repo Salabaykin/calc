@@ -13,16 +13,17 @@ class Calculator {
   }
 
   render() {
+    this.form.innerHTML = '';
     for (let i = 0; i < this.selects.length; i++) {
       let select = this.selects[i];
       select.element.addEventListener('change', (event) => {
-        if (select.data.link) {
-          for (let j = 0; j < select.data.link.length; j++) {
-            let sel = new Select(this.file[select.data.link[j]]);
+        if (select.data["link"]) {
+          for (let j = 0; j < select.data["link"].length; j++) {
+            let sel = new Select(this.file[select.data["link"][j]]);
             this.selects.splice(i+1, 0, sel);
-            this.render();
           }
         }
+        this.render();
         this.calc();
       });
       this.form.append(select.element);
@@ -30,13 +31,9 @@ class Calculator {
 
   }
 
-  addSelect(select) {
-
-  }
-
   async init() {
     try {
-      this.file = await this.getFile('http://a9144202.beget.tech/script/calc-master/data.json');
+      this.file = await this.getFile('data.json');
       for (const select in this.file) {
         if (this.file[select]["type"] === "section") {
           let sel = new Select(this.file[select]);
