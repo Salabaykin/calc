@@ -19,22 +19,35 @@ class Calculator {
     }
   }
 
-  onChange(select) {
-    if (select.data["link"]) {
-      for (let i = 0; i < select.data["link"].length; i++) {
-        let sel = new Select(this.file[select.data["link"][i]]);
-        let find = this.selects.find(select => select.data['name'] === sel.data['name']);
-        if (!find) {
-          sel.element.addEventListener('change', () => this.onChange(sel));
-          this.selects.push(sel);
+  onChange() {
+    this.selects.forEach(select => {
+      if (select.data["link"]) {
+        for (const key in select.data["link"]) {
+          for (let i = 0; i < select.data["link"][key].length; i++) {
+            let selectTag = select.element.querySelector('select');
+            let selectText = selectTag.options[selectTag.selectedIndex].text;
+            let find = this.selects.find(x => x.data["id"] == select.data["link"][key][i]);
+            if (selectText == key) {
+              if (!find) {
+                let sel = new Select(this.file[select.data["link"][key][i]]);
+                sel.element.addEventListener('change', () => this.onChange());
+                this.selects.push(sel);
+              }
+            } else {
+              if (find) {
+                this.selects.splice(this.selects.indexOf(find));
+              }
+            }
+          }
         }
       }
-    }
-    this.render();
-    this.calc();
+      this.render();
+      this.calc();
+    });
   }
 
   render() {
+    this.form.innerHTML = '';
     for (let i = 0; i < this.selects.length; i++) {
       let select = this.selects[i];
       this.form.append(select.element);
