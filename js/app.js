@@ -12,23 +12,33 @@ class Calculator {
     return fetch(url).then(d => d.json());
   }
 
-  render() {
-    this.form.innerHTML = '';
+  handleEvents() {
     for (let i = 0; i < this.selects.length; i++) {
       let select = this.selects[i];
-      select.element.addEventListener('change', (event) => {
-        if (select.data["link"]) {
-          for (let j = 0; j < select.data["link"].length; j++) {
-            let sel = new Select(this.file[select.data["link"][j]]);
-            this.selects.splice(i+1, 0, sel);
-          }
+      select.element.addEventListener('change', () => this.onChange(select));
+    }
+  }
+
+  onChange(select) {
+    if (select.data["link"]) {
+      for (let i = 0; i < select.data["link"].length; i++) {
+        let sel = new Select(this.file[select.data["link"][i]]);
+        let find = this.selects.find(select => select.data['name'] === sel.data['name']);
+        if (!find) {
+          sel.element.addEventListener('change', () => this.onChange(sel));
+          this.selects.push(sel);
         }
-        this.render();
-        this.calc();
-      });
+      }
+    }
+    this.render();
+    this.calc();
+  }
+
+  render() {
+    for (let i = 0; i < this.selects.length; i++) {
+      let select = this.selects[i];
       this.form.append(select.element);
     }
-
   }
 
   async init() {
@@ -40,6 +50,7 @@ class Calculator {
           this.selects.push(sel);
         }
       }
+      this.handleEvents();
       this.render();
     }
     finally {
@@ -94,4 +105,4 @@ class Option {
   }
 }
 
-let calculator = new Calculator;
+let calculator = new Calculator();
