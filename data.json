@@ -59,7 +59,8 @@
             }
         ],
         "fkSelect": {
-            "ЕНВД" : [3, 4]
+            "ЕНВД" : [3, 4],
+            "Патент" : [12]
         },
         "fkOption": {}
     },
@@ -382,7 +383,9 @@
             }
         ],
         "fkSelect": {},
-        "fkOption": {}
+        "fkOption": {
+            "Бухгалтер": {"9": "1C BILLPROF"}
+        }
     },
     {
         "id": "9",
@@ -406,6 +409,12 @@
                 "value": "2000",
                 "selected": false,
                 "disabled": false
+            },
+            {
+                "text": "1C BILLPROF",
+                "value": "3000",
+                "selected": false,
+                "disabled": true
             }
         ],
         "fkSelect": {},
@@ -475,6 +484,51 @@
             {
                 "text": "Банк-клиент и разность в 1С",
                 "value": "3000",
+                "selected": false,
+                "disabled": false
+            }
+        ],
+        "fkSelect": {},
+        "fkOption": {}
+    },
+    {
+        "id": "12",
+        "name": "Количество патентов для ИП",
+        "type": "subsection",
+        "options": [
+            {
+                "text": "0",
+                "value": "0",
+                "selected": true,
+                "disabled": false
+            },
+            {
+                "text": "1",
+                "value": "100",
+                "selected": false,
+                "disabled": false
+            },
+            {
+                "text": "2",
+                "value": "200",
+                "selected": false,
+                "disabled": false
+            },
+            {
+                "text": "3",
+                "value": "300",
+                "selected": false,
+                "disabled": false
+            },
+            {
+                "text": "4",
+                "value": "400",
+                "selected": false,
+                "disabled": false
+            },
+            {
+                "text": "5",
+                "value": "500",
                 "selected": false,
                 "disabled": false
             }

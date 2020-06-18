@@ -16,11 +16,11 @@ class Calculator {
   handleEvents() {
     for (let i = 0; i < this.selects.length; i++) {
       let select = this.selects[i];
-      select.element.addEventListener('change', () => this.onChange());
+      select.element.addEventListener('change', () => this.reload());
     }
   }
 
-  onChange() {
+  reload() {
     this.selects.forEach(select => {
       if (Object.keys(select.data["fkSelect"]).length != 0) {
         if (select.getSubsections()) {
@@ -30,7 +30,11 @@ class Calculator {
         }
       }
       if (Object.keys(select.data["fkOption"]).length != 0) {
-        this.addDisabledOptions(select);
+        if (select.getDisabledOptions()) {
+          this.addDisabledOptions(select);
+        } else {
+          this.deleteDisabledOptions(select);
+        }
       }
     });
     this.render();
@@ -39,12 +43,20 @@ class Calculator {
 
   addDisabledOptions(select) {
     for (const option in select.data["fkOption"]) {
-      if (select.getText() == option) {
-        for (const disabled in select.data["fkOption"][option]) {
-          let selectWithDisabled = this.selects.find(x => x.data["id"] == disabled);
-          let text = select.data["fkOption"][option][disabled];
-          selectWithDisabled.showDisabled(text);
-        }
+      for (const disabled in select.data["fkOption"][option]) {
+        let selectWithDisabled = this.selects.find(x => x.data["id"] == disabled);
+        let text = select.data["fkOption"][option][disabled];
+        selectWithDisabled.addDisabled(text);
+      }
+    }
+  }
+
+  deleteDisabledOptions(select) {
+    for (const key in select.data["fkOption"]) {
+      let fkOption = select.data["fkOption"][key];
+      for (const option in fkOption) {
+        let find = this.selects.find(x => x.data.id == option);
+        find.deleteDisabled(fkOption[option]);
       }
     }
   }
@@ -54,13 +66,11 @@ class Calculator {
     let links = select.data["fkSelect"][option];
     for (let i = 0; i < links.length; i++) {
       let find = this.selects.find(x => x.data["id"] == links[i]);
-      if (select.getText() == option) {
-        if (!find) {
-          let data = this.file.find(x => x.id == links[i]);
-          let newSelect = new Select(data);
-          newSelect.element.addEventListener('change', () => this.onChange());
-          this.selects.push(newSelect);
-        }
+      if (!find) {
+        let data = this.file.find(x => x.id == links[i]);
+        let newSelect = new Select(data);
+        newSelect.element.addEventListener('change', () => this.reload());
+        this.selects.push(newSelect);
       }
     }
   }
@@ -94,7 +104,7 @@ class Calculator {
         }
       });
       this.handleEvents();
-      this.render();
+      this.reload();
     }
     finally {
       console.log('Успешно');
@@ -142,7 +152,7 @@ class Select {
     return this.element;
   }
 
-  showDisabled(text) {
+  addDisabled(text) {
     let find = this.data.options.find(x => x.text == text);
     let disabled = new Option(find.text, find.value, find.selected ? true : false);
     let options = this.element.querySelectorAll('option');
@@ -150,6 +160,12 @@ class Select {
     if (!option) {
       this.element.querySelector('select').add(disabled);
     }
+  }
+
+  deleteDisabled(text) {
+    let options = this.element.querySelectorAll('option');
+    let disabled = Array.from(options).find(x => x.text == text);
+    if (disabled) disabled.remove();
   }
 
   getText() {
@@ -160,6 +176,11 @@ class Select {
 
   getSubsections() {
     let find = Object.keys(this.data["fkSelect"]).find(option => option == this.getText());
+    return find ? find : false;
+  }
+
+  getDisabledOptions() {
+    let find = Object.keys(this.data["fkOption"]).find(option => option == this.getText());
     return find ? find : false;
   }
 
