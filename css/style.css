@@ -86,7 +86,6 @@ select::-ms-expand {
 }
 
 .calc__content {
-    margin-top: 50px;
     display: flex;
     justify-content: space-between;
 }
@@ -133,8 +132,7 @@ select::-ms-expand {
 }
 
 .calc-price {
-    width: 35%;
-    padding: 30px 20px;
+    width: 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -180,10 +178,6 @@ select::-ms-expand {
 
 /* Block company ================================== */
 
-.company {
-    padding-top: 50px;
-}
-
 .company-block {
     margin-bottom: 50px;
     display: flex;
@@ -200,11 +194,16 @@ select::-ms-expand {
 }
 
 .company-block--right {
-    min-width: 730px;
+    min-width: 700px;
+}
+
+.company-block--right > .company-block__wrapper {
+    padding: 20px 0;
+    padding-left: 50px;
 }
 
 .company-block__wrapper {
-    padding: 20px 15px;
+    padding: 20px 0;
 }
 
 .company-block__item {
@@ -432,6 +431,7 @@ select::-ms-expand {
 .tabs-content {
     position: relative;
     z-index: 2;
+    padding: 15px;
     border-radius: 0 4px 4px 4px;
     background: white;
 }
