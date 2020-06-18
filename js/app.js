@@ -2,48 +2,78 @@ class Calculator {
 
   constructor() {
     this.form = document.querySelector('.calc-form');
-    this.file = '';
+    this.file = [];
     this.selects = [];
     this.sum = 0;
     this.init();
   }
 
-  getFile(url) {
-    return fetch(url).then(d => d.json());
+  async getFile(url) {
+    const d = await fetch(url);
+    return await d.json();
   }
 
   handleEvents() {
     for (let i = 0; i < this.selects.length; i++) {
       let select = this.selects[i];
-      select.element.addEventListener('change', () => this.onChange(select));
+      select.element.addEventListener('change', () => this.onChange());
     }
   }
 
   onChange() {
     this.selects.forEach(select => {
-      if (select.data["link"]) {
-        for (const key in select.data["link"]) {
-          for (let i = 0; i < select.data["link"][key].length; i++) {
-            let selectTag = select.element.querySelector('select');
-            let selectText = selectTag.options[selectTag.selectedIndex].text;
-            let find = this.selects.find(x => x.data["id"] == select.data["link"][key][i]);
-            if (selectText == key) {
-              if (!find) {
-                let sel = new Select(this.file[select.data["link"][key][i]]);
-                sel.element.addEventListener('change', () => this.onChange());
-                this.selects.push(sel);
-              }
-            } else {
-              if (find) {
-                this.selects.splice(this.selects.indexOf(find));
-              }
-            }
-          }
+      if (Object.keys(select.data["fkSelect"]).length != 0) {
+        if (select.getSubsections()) {
+          this.addSubsections(select);
+        } else {
+          this.deleteSubsections(select);
         }
       }
-      this.render();
-      this.calc();
+      if (Object.keys(select.data["fkOption"]).length != 0) {
+        this.addDisabledOptions(select);
+      }
     });
+    this.render();
+    this.calc();
+  }
+
+  addDisabledOptions(select) {
+    for (const option in select.data["fkOption"]) {
+      if (select.getText() == option) {
+        for (const disabled in select.data["fkOption"][option]) {
+          let selectWithDisabled = this.selects.find(x => x.data["id"] == disabled);
+          let text = select.data["fkOption"][option][disabled];
+          selectWithDisabled.showDisabled(text);
+        }
+      }
+    }
+  }
+
+  addSubsections(select) {
+    let option = select.getSubsections();
+    let links = select.data["fkSelect"][option];
+    for (let i = 0; i < links.length; i++) {
+      let find = this.selects.find(x => x.data["id"] == links[i]);
+      if (select.getText() == option) {
+        if (!find) {
+          let data = this.file.find(x => x.id == links[i]);
+          let newSelect = new Select(data);
+          newSelect.element.addEventListener('change', () => this.onChange());
+          this.selects.push(newSelect);
+        }
+      }
+    }
+  }
+
+  deleteSubsections(select) {
+    for (const key in select.data["fkSelect"]) {
+      for (let i = 0; i < select.data["fkSelect"][key].length; i++) {
+        let find = this.selects.find(x => x.data["id"] == select.data["fkSelect"][key][i]);
+        if (find) {
+          this.selects.splice(this.selects.indexOf(find));
+        }
+      }
+    }
   }
 
   render() {
@@ -57,12 +87,12 @@ class Calculator {
   async init() {
     try {
       this.file = await this.getFile('data.json');
-      for (const select in this.file) {
-        if (this.file[select]["type"] === "section") {
-          let sel = new Select(this.file[select]);
-          this.selects.push(sel);
+      this.file.forEach(select => {
+        if (select["type"] === "section") {
+          let newSelect = new Select(select);
+          this.selects.push(newSelect);
         }
-      }
+      });
       this.handleEvents();
       this.render();
     }
@@ -93,29 +123,46 @@ class Select {
   init() {
     this.element = document.createElement('div');
     this.element.className = 'calc-item';
-    let str = `
-          <div class="calc-item__title">${this.data["name"]}:</div>
-          <select class="calc-item__select">
-    `;
-    for (const option in this.data.options) {
-      let opt = new Option(option, this.data.options[option]);
-      str += opt.render();
-    }
-    str += `</select>`;
-    this.element.innerHTML = str;
+
+    let title = document.createElement('div');
+    title.className = 'calc-item__title';
+    title.textContent = this.data.name;
+    this.element.append(title);
+
+    let select = document.createElement('select');
+    select.className = 'calc-item__select';
+    this.data.options.forEach(option => {
+      if (!option.disabled) {
+        let newOption = new Option(option.text, option.value, option.selected ? true : false);
+        select.add(newOption);
+      }
+    });
+    this.element.append(select);
+    
     return this.element;
   }
 
-}
+  showDisabled(text) {
+    let find = this.data.options.find(x => x.text == text);
+    let disabled = new Option(find.text, find.value, find.selected ? true : false);
+    let options = this.element.querySelectorAll('option');
+    let option = Array.from(options).find(x => x.text == text);
+    if (!option) {
+      this.element.querySelector('select').add(disabled);
+    }
+  }
 
-class Option {
-  constructor(title, value) {
-    this.title = title;
-    this.value = value;
+  getText() {
+    let select = this.element.querySelector('select');
+    let text = select.options[select.selectedIndex].text;
+    return text;
   }
-  render() {
-    return `<option value="${this.value}">${this.title}</option>`;
+
+  getSubsections() {
+    let find = Object.keys(this.data["fkSelect"]).find(option => option == this.getText());
+    return find ? find : false;
   }
+
 }
 
 let calculator = new Calculator();
