@@ -33,6 +33,7 @@ select:active, select:focus {
 body, h1, h2, h3, h4, ul, li {
     margin: 0;
     padding: 0;
+    background-color: #dadada;
 }
 
 ul {
@@ -56,7 +57,6 @@ select::-ms-expand {
 
 .main {
     padding: 50px 0;
-    background-color: #dadada;
 }
 
 .container {
@@ -101,7 +101,6 @@ select::-ms-expand {
     flex-wrap: wrap;
     justify-content: space-between;
     width: 65%;
-    padding: 30px 20px;
     background-color: #ffffff;
 }
 
@@ -132,21 +131,21 @@ select::-ms-expand {
 }
 
 .calc-price {
-    width: 30%;
+    width: 35%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .calc-price__title {
-    font-size: 23px;
+    font-size: 16px;
     margin-bottom: 30px;
 }
 
 .calc-price__sum {
     margin-bottom: 30px;
     text-align: center;
-    font-size: 35px;
+    font-size: 23px;
     font-weight: 700;
 }
 
@@ -198,12 +197,7 @@ select::-ms-expand {
 }
 
 .company-block--right > .company-block__wrapper {
-    padding: 20px 0;
     padding-left: 50px;
-}
-
-.company-block__wrapper {
-    padding: 20px 0;
 }
 
 .company-block__item {
@@ -275,7 +269,6 @@ select::-ms-expand {
 }
 
 .company-list {
-    padding: 20px 15px;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
@@ -413,25 +406,21 @@ select::-ms-expand {
 .tabs li a {
     display: block;
     position: relative;
-    top: 4px;
     padding: 10px 25px;
     border-radius: 2px 2px 0 0;
-    background: white;
-    opacity: 0.7;
+    background: #e6e6e6;
     transition: all 0.1s ease-in-out;
 }
 
 .tabs li.active a,
 .tabs li a:hover {
-    opacity: 1;
-    font-weight: 700;
-    top: 0;
+    background: #ffffff;
 }
 
 .tabs-content {
     position: relative;
     z-index: 2;
-    padding: 15px;
+    padding: 50px 15px 15px 15px;
     border-radius: 0 4px 4px 4px;
     background: white;
 }
